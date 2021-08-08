@@ -1,0 +1,11 @@
+/.github            export-ignore
+/tests              export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore
+/.scrutinizer.yml   export-ignore
+/.editorconfig      export-ignore
+/.semver            export-ignore
+/CHANGELOG.md       export-ignore
+/phpunit.xml*       export-ignore
+/UPGRADE-*.md       export-ignore
+/.php-cs-fixer*     export-ignore
