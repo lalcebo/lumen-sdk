@@ -12,9 +12,6 @@ namespace Lalcebo\Lumen\Support;
 
 use Illuminate\Support\Str as IlluminateStr;
 
-/**
- * @package Lalcebo\Lumen\Support
- */
 class Str extends IlluminateStr
 {
     /**

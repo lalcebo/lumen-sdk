@@ -15,8 +15,6 @@ use Illuminate\Support\ServiceProvider;
 use Lalcebo\Lumen\Http\FormRequest;
 
 /**
- * @package Lalcebo\Lumen\Providers
- *
  * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Foundation/Providers/FormRequestServiceProvider.php
  * @author https://github.com/laravel/framework/graphs/contributors
  */
