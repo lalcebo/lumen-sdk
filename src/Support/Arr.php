@@ -12,9 +12,6 @@ namespace Lalcebo\Lumen\Support;
 
 use Illuminate\Support\Arr as IlluminateArr;
 
-/**
- * @package Lalcebo\Lumen\Support
- */
 class Arr extends IlluminateArr
 {
     /**

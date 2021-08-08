@@ -23,8 +23,6 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Validator;
 
 /**
- * @package Lalcebo\Lumen\Http
- *
  * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Foundation/Http/FormRequest.php
  * @author https://github.com/laravel/framework/graphs/contributors
  *

@@ -24,9 +24,6 @@ use Lalcebo\Lumen\Http\FormRequest;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @package Lalcebo\Lumen\Tests\Http
- */
 class FormRequestTest extends TestCase
 {
     protected function tearDown(): void
