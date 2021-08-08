@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  pull_request_target:
+    branches:
+      - master
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        php-versions: [ '7.3', '7.4', '8.0' ]
+
+    name: Tests on ${{ matrix.os }} with 🐘 ${{ matrix.php-versions }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        name: Configure PHP
+        with:
+          php-version: ${{ matrix.php-versions }}
+          tools: composer:v2
+          coverage: xdebug
+          extensions: json, ctype
+
+      - name: Install dependencies
+        run: composer install --no-progress
+
+      - name: Run the tests
+        run: |
+          cp phpunit.xml.dist phpunit.xml
+          composer tests
