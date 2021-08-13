@@ -42,12 +42,12 @@ abstract class S3StorageService extends StorageService
     /**
      * @param string|null $diskName
      */
-    public function __construct(?string $diskName)
+    public function __construct(string $diskName = null)
     {
         $configPrefix = 'filesystems.disks.';
-        $configKey = $configPrefix . $diskName;
 
         if (is_null($diskName)) {
+            $configKey = $configPrefix . $this->bucket;
             $this->diskName = $this->bucket;
             config([
                 $configPrefix . $this->diskName => [
@@ -61,7 +61,11 @@ abstract class S3StorageService extends StorageService
                     'use_path_style_endpoint' => $this->usePathStyleEndpoint
                 ]
             ]);
-        } elseif (config()->has($configKey)) {
+        } else {
+            $configKey = $configPrefix . $diskName;
+        }
+
+        if (config()->has($configKey)) {
             $reflection = new ReflectionObject($this);
             $this->diskName = $diskName;
             foreach (config($configKey) as $key => $val) {
