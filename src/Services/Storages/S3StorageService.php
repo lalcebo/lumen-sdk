@@ -10,48 +10,66 @@ declare(strict_types=1);
 
 namespace Lalcebo\Lumen\Services\Storages;
 
+use Lalcebo\Lumen\Support\Str;
+use ReflectionObject;
+
 abstract class S3StorageService extends StorageService
 {
-    /** @var string $awsRegion */
-    protected $awsRegion = 'us-east-1';
+    /** @var string */
+    protected $region = 'us-east-1';
 
-    /** @var string|null $bucketName */
-    protected $bucketName;
+    /** @var string */
+    protected $bucket;
 
     /** @var string */
     protected $driver = 's3';
 
     /** @var string */
-    protected $awsAccessKeyId;
+    protected $key;
 
     /** @var string */
-    protected $awsSecretAccessKey;
+    protected $secret;
 
     /** @var string */
-    protected $awsUrl;
+    protected $url;
 
     /** @var string */
-    protected $awsEndpoint;
+    protected $endpoint;
 
     /** @var bool */
     protected $usePathStyleEndpoint = false;
 
-    public function __construct()
+    /**
+     * @param string|null $diskName
+     */
+    public function __construct(?string $diskName)
     {
-        $this->diskName = "s3-$this->bucketName";
+        $configPrefix = 'filesystems.disks.';
+        $configKey = $configPrefix . $diskName;
 
-        config([
-            'filesystems.disks.' . $this->diskName => [
-                'driver' => $this->driver,
-                'key' => $this->awsAccessKeyId,
-                'secret' => $this->awsSecretAccessKey,
-                'region' => $this->awsRegion,
-                'bucket' => $this->bucketName,
-                'url' => $this->awsUrl,
-                'endpoint' => $this->awsEndpoint,
-                'use_path_style_endpoint' => $this->usePathStyleEndpoint
-            ]
-        ]);
+        if (is_null($diskName)) {
+            $this->diskName = $this->bucket;
+            config([
+                $configPrefix . $this->diskName => [
+                    'driver' => $this->driver,
+                    'key' => $this->key,
+                    'secret' => $this->secret,
+                    'region' => $this->region,
+                    'bucket' => $this->bucket,
+                    'url' => $this->url,
+                    'endpoint' => $this->endpoint,
+                    'use_path_style_endpoint' => $this->usePathStyleEndpoint
+                ]
+            ]);
+        } elseif (config()->has($configKey)) {
+            $reflection = new ReflectionObject($this);
+            $this->diskName = $diskName;
+            foreach (config($configKey) as $key => $val) {
+                if ($reflection->hasProperty(Str::camel($key))) {
+                    $this->{Str::camel($key)} = $val;
+                }
+            }
+        }
 
         parent::__construct();
     }
@@ -59,8 +77,8 @@ abstract class S3StorageService extends StorageService
     /**
      * @return string|null
      */
-    public function getBucketName(): ?string
+    public function getBucket(): ?string
     {
-        return $this->bucketName;
+        return $this->bucket;
     }
 }
