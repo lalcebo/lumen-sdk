@@ -10,11 +10,13 @@ declare(strict_types=1);
 
 namespace Lalcebo\Lumen\Services\Storages;
 
+use DateTimeInterface;
 use Illuminate\Contracts\Filesystem\FileExistsException;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
+use RuntimeException;
 
 abstract class StorageService implements Filesystem
 {
@@ -286,5 +288,32 @@ abstract class StorageService implements Filesystem
     public function deleteDirectory($directory): bool
     {
         return $this->fileSystem->deleteDirectory($directory);
+    }
+
+    /**
+     * Get a temporary URL for the file at the given path.
+     *
+     * @param string $path
+     * @param DateTimeInterface $expiration
+     * @param array $options
+     * @return string
+     *
+     */
+    public function temporaryUrl(string $path, DateTimeInterface $expiration, array $options = []): string
+    {
+        return $this->fileSystem->temporaryUrl($path, $expiration, $options);
+    }
+
+    /**
+     * Get the URL for the file at the given path.
+     *
+     * @param  string  $path
+     * @return string
+     *
+     * @throws RuntimeException
+     */
+    public function url(string $path): string
+    {
+        return $this->fileSystem->url($path);
     }
 }
