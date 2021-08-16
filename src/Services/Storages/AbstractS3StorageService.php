@@ -13,7 +13,7 @@ namespace Lalcebo\Lumen\Services\Storages;
 use Lalcebo\Lumen\Support\Str;
 use ReflectionObject;
 
-abstract class S3StorageService extends StorageService
+abstract class AbstractS3StorageService extends AbstractStorageService
 {
     /** @var string */
     protected $region = 'us-east-1';
@@ -40,42 +40,21 @@ abstract class S3StorageService extends StorageService
     protected $usePathStyleEndpoint = false;
 
     /**
-     * @param string|null $diskName
+     * Set properties class from config keys values.
+     *
+     * @return void
      */
-    public function __construct(string $diskName = null)
+    protected function configurator(): void
     {
-        $configPrefix = 'filesystems.disks.';
-
-        if (is_null($diskName)) {
-            $configKey = $configPrefix . $this->bucket;
-            $this->diskName = $this->bucket;
-            config([
-                $configPrefix . $this->diskName => [
-                    'driver' => $this->driver,
-                    'key' => $this->key,
-                    'secret' => $this->secret,
-                    'region' => $this->region,
-                    'bucket' => $this->bucket,
-                    'url' => $this->url,
-                    'endpoint' => $this->endpoint,
-                    'use_path_style_endpoint' => $this->usePathStyleEndpoint
-                ]
-            ]);
-        } else {
-            $configKey = $configPrefix . $diskName;
-        }
-
+        $configKey = 'filesystems.disks.' . $this->diskName;
         if (config()->has($configKey)) {
             $reflection = new ReflectionObject($this);
-            $this->diskName = $diskName;
             foreach (config($configKey) as $key => $val) {
                 if ($reflection->hasProperty(Str::camel($key))) {
                     $this->{Str::camel($key)} = $val;
                 }
             }
         }
-
-        parent::__construct();
     }
 
     /**
