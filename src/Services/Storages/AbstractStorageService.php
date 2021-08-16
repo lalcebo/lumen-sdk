@@ -18,7 +18,10 @@ use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use RuntimeException;
 
-abstract class StorageService implements Filesystem
+/**
+ * @method void withConfigurator()
+ */
+abstract class AbstractStorageService implements Filesystem
 {
     /**
      * Override this if you want to use a disk other than the default
@@ -32,6 +35,10 @@ abstract class StorageService implements Filesystem
 
     public function __construct()
     {
+        if (method_exists($this, 'configurator')) {
+            $this->configurator();
+        }
+
         // This will not break if $this->diskName is null. It will use the default disk.
         $this->fileSystem = Storage::disk($this->diskName);
     }
