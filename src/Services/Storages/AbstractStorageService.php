@@ -14,6 +14,8 @@ use DateTimeInterface;
 use Illuminate\Contracts\Filesystem\FileExistsException;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use RuntimeException;
@@ -62,7 +64,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Determine if a file exists.
      *
-     * @param  string  $path
+     * @param string $path
      * @return bool
      */
     public function exists($path): bool
@@ -73,7 +75,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get the contents of a file.
      *
-     * @param  string  $path
+     * @param string $path
      * @return string
      *
      * @throws FileNotFoundException
@@ -86,7 +88,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get a resource to read the file.
      *
-     * @param  string  $path
+     * @param string $path
      * @return resource|null The path resource or null on failure.
      *
      * @throws FileNotFoundException
@@ -99,9 +101,9 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Write the contents of a file.
      *
-     * @param  string  $path
-     * @param  string|resource  $contents
-     * @param  mixed  $options
+     * @param string $path
+     * @param string|resource $contents
+     * @param mixed $options
      * @return bool
      */
     public function put($path, $contents, $options = []): bool
@@ -112,9 +114,9 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Write a new file using a stream.
      *
-     * @param  string  $path
-     * @param  resource  $resource
-     * @param  array  $options
+     * @param string $path
+     * @param resource $resource
+     * @param array $options
      * @return bool
      *
      * @throws InvalidArgumentException If $resource is not a file handle.
@@ -128,7 +130,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get the visibility for the given path.
      *
-     * @param  string  $path
+     * @param string $path
      * @return string
      */
     public function getVisibility($path): string
@@ -139,8 +141,8 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Set the visibility for the given path.
      *
-     * @param  string  $path
-     * @param  string  $visibility
+     * @param string $path
+     * @param string $visibility
      * @return bool
      */
     public function setVisibility($path, $visibility): bool
@@ -151,8 +153,8 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Prepend to a file.
      *
-     * @param  string  $path
-     * @param  string  $data
+     * @param string $path
+     * @param string $data
      * @return bool
      */
     public function prepend($path, $data): bool
@@ -163,8 +165,8 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Append to a file.
      *
-     * @param  string  $path
-     * @param  string  $data
+     * @param string $path
+     * @param string $data
      * @return bool
      */
     public function append($path, $data): bool
@@ -175,7 +177,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Delete the file at a given path.
      *
-     * @param  string|array  $paths
+     * @param string|array $paths
      * @return bool
      */
     public function delete($paths): bool
@@ -186,8 +188,8 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Copy a file to a new location.
      *
-     * @param  string  $from
-     * @param  string  $to
+     * @param string $from
+     * @param string $to
      * @return bool
      */
     public function copy($from, $to): bool
@@ -198,8 +200,8 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Move a file to a new location.
      *
-     * @param  string  $from
-     * @param  string  $to
+     * @param string $from
+     * @param string $to
      * @return bool
      */
     public function move($from, $to): bool
@@ -210,7 +212,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get the file size of a given file.
      *
-     * @param  string  $path
+     * @param string $path
      * @return int
      */
     public function size($path): int
@@ -221,7 +223,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get the file's last modification time.
      *
-     * @param  string  $path
+     * @param string $path
      * @return int
      */
     public function lastModified($path): int
@@ -232,8 +234,8 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get an array of all files in a directory.
      *
-     * @param  string|null  $directory
-     * @param  bool  $recursive
+     * @param string|null $directory
+     * @param bool $recursive
      * @return array
      */
     public function files($directory = null, $recursive = false): array
@@ -244,7 +246,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get all the files from the given directory (recursive).
      *
-     * @param  string|null  $directory
+     * @param string|null $directory
      * @return array
      */
     public function allFiles($directory = null): array
@@ -255,8 +257,8 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get all the directories within a given directory.
      *
-     * @param  string|null  $directory
-     * @param  bool  $recursive
+     * @param string|null $directory
+     * @param bool $recursive
      * @return array
      */
     public function directories($directory = null, $recursive = false): array
@@ -267,7 +269,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get all (recursive) of the directories within a given directory.
      *
-     * @param  string|null  $directory
+     * @param string|null $directory
      * @return array
      */
     public function allDirectories($directory = null): array
@@ -278,7 +280,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Create a directory.
      *
-     * @param  string  $path
+     * @param string $path
      * @return bool
      */
     public function makeDirectory($path): bool
@@ -289,7 +291,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Recursively delete a directory.
      *
-     * @param  string  $directory
+     * @param string $directory
      * @return bool
      */
     public function deleteDirectory($directory): bool
@@ -314,7 +316,7 @@ abstract class AbstractStorageService implements Filesystem
     /**
      * Get the URL for the file at the given path.
      *
-     * @param  string  $path
+     * @param string $path
      * @return string
      *
      * @throws RuntimeException
@@ -322,5 +324,43 @@ abstract class AbstractStorageService implements Filesystem
     public function url(string $path): string
     {
         return $this->fileSystem->url($path);
+    }
+
+    /**
+     * Get the mime-type of a given file.
+     *
+     * @param string $path
+     * @return string|false
+     */
+    public function mimeType(string $path)
+    {
+        return $this->fileSystem->mimeType($path);
+    }
+
+    /**
+     * Store the uploaded file on the disk.
+     *
+     * @param string $path
+     * @param File|UploadedFile|string $file
+     * @param mixed $options
+     * @return string|false
+     */
+    public function putFile(string $path, $file, $options = [])
+    {
+        return $this->fileSystem->putFile($path, $file, $options);
+    }
+
+    /**
+     * Store the uploaded file on the disk with a given name.
+     *
+     * @param string $path
+     * @param File|UploadedFile|string $file
+     * @param string $name
+     * @param mixed $options
+     * @return string|false
+     */
+    public function putFileAs(string $path, $file, string $name, $options = [])
+    {
+        return $this->fileSystem->putFileAs($path, $file, $name, $options);
     }
 }
