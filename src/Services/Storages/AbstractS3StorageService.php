@@ -12,6 +12,8 @@ namespace Lalcebo\Lumen\Services\Storages;
 
 use Lalcebo\Lumen\Support\Str;
 use ReflectionObject;
+use RuntimeException;
+use Throwable;
 
 abstract class AbstractS3StorageService extends AbstractStorageService
 {
@@ -43,6 +45,7 @@ abstract class AbstractS3StorageService extends AbstractStorageService
      * Set properties class from config keys values.
      *
      * @return void
+     * @throws Throwable
      */
     protected function configurator(): void
     {
@@ -55,12 +58,18 @@ abstract class AbstractS3StorageService extends AbstractStorageService
                 }
             }
         }
+
+        throw_if(
+            empty($this->bucket),
+            RuntimeException::class,
+            'Bucket is missing or empty and is a required parameter.'
+        );
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getBucket(): ?string
+    public function getBucket(): string
     {
         return $this->bucket;
     }
