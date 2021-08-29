@@ -21,7 +21,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * @method void withConfigurator()
+ * @method void configurator()
  */
 abstract class AbstractStorageService implements Filesystem
 {
