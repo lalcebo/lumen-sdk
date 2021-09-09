@@ -50,7 +50,7 @@ abstract class AbstractS3StorageService extends AbstractStorageService
      */
     protected function configurator(): void
     {
-        $configKey = 'filesystems.disks.'.$this->diskName;
+        $configKey = 'filesystems.disks.' . $this->diskName;
         if (config()->has($configKey)) {
             $reflection = new ReflectionObject($this);
             foreach (config($configKey) as $key => $val) {
