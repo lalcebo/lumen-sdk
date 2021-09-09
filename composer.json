@@ -34,9 +34,11 @@
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.0",
     "mockery/mockery": "^1.4",
+    "pestphp/pest": "^1.18",
+    "pestphp/pest-plugin-parallel": "^0.3.1",
     "php-parallel-lint/php-console-highlighter": "^0.5",
     "php-parallel-lint/php-parallel-lint": "^1.3",
-    "phpunit/phpunit": "^9.0",
+    "phpunit/phpunit": "^9.5.5",
     "roave/security-advisories": "dev-master",
     "spatie/data-transfer-object": "^1.0|^2.0"
   },
@@ -72,10 +74,10 @@
   "scripts": {
     "lint": "parallel-lint . --exclude vendor",
     "format": "php-cs-fixer fix",
-    "phpunit": "phpunit --coverage-text -colors=always --configuration phpunit.xml",
+    "pest": "pest -p --coverage",
     "tests": [
       "@lint",
-      "@phpunit"
+      "@pest"
     ]
   }
 }

@@ -1,292 +1,117 @@
 <?php
 
+/** @noinspection PhpUnhandledExceptionInspection */
+/** @noinspection StaticClosureCanBeUsedInspection */
+
 /**
  * Created by Jorge P. Hernandez Lalcebo
  * Mail: lalcebo2003@gmail.com
- * Date: 7/25/21 4:53 PM
+ * Date: 7/25/21 4:53 PM.
  */
 
 declare(strict_types=1);
 
-namespace Lalcebo\Lumen\Tests\Http;
-
-use Closure;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Contracts\Validation\Factory as ValidationFactoryContract;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Factory as ValidationFactory;
 use Illuminate\Validation\ValidationException;
 use Lalcebo\Lumen\Http\FormRequest;
-use Mockery as m;
-use PHPUnit\Framework\TestCase;
+use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestForbiddenStub;
+use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestHooks;
+use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestNestedArrayStub;
+use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestNestedChildStub;
+use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestNestedStub;
+use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestStub;
+use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestTwiceStub;
 
-class FormRequestTest extends TestCase
+/**
+ * Create a new request of the given type.
+ *
+ * @param array $payload
+ * @param string $class
+ *
+ * @return FormRequest
+ * @noinspection PhpParamsInspection
+ * @noinspection PhpUndefinedMethodInspection
+ */
+function makeRequest(array $payload = [], string $class = FormRequestStub::class): FormRequest
 {
-    protected function tearDown(): void
-    {
-        m::close();
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws AuthorizationException
-     * @throws ValidationException
-     */
-    public function testValidatedMethodReturnsTheValidatedData(): void
-    {
-        $request = $this->createRequest(['name' => 'specified', 'with' => 'extras']);
-        $request->validateResolved();
-        $this->assertEquals(['name' => 'specified'], $request->validated());
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws AuthorizationException
-     * @throws ValidationException
-     */
-    public function testValidatedMethodReturnsTheValidatedDataNestedRules(): void
-    {
-        $payload = ['nested' => ['foo' => 'bar', 'baz' => ''], 'array' => [1, 2]];
-        $request = $this->createRequest($payload, FormRequestNestedStub::class);
-        $request->validateResolved();
-        $this->assertEquals(['nested' => ['foo' => 'bar'], 'array' => [1, 2]], $request->validated());
-    }
-
-    /**
-     * @throws AuthorizationException
-     * @throws BindingResolutionException
-     * @throws ValidationException
-     */
-    public function testValidatedMethodReturnsTheValidatedDataNestedChildRules(): void
-    {
-        $payload = ['nested' => ['foo' => 'bar', 'with' => 'extras']];
-        $request = $this->createRequest($payload, FormRequestNestedChildStub::class);
-        $request->validateResolved();
-        $this->assertEquals(['nested' => ['foo' => 'bar']], $request->validated());
-    }
-
-    /**
-     * @throws AuthorizationException
-     * @throws BindingResolutionException
-     * @throws ValidationException
-     */
-    public function testValidatedMethodReturnsTheValidatedDataNestedArrayRules(): void
-    {
-        $payload = ['nested' => [['bar' => 'baz', 'with' => 'extras'], ['bar' => 'baz2', 'with' => 'extras']]];
-        $request = $this->createRequest($payload, FormRequestNestedArrayStub::class);
-        $request->validateResolved();
-        $this->assertEquals(['nested' => [['bar' => 'baz'], ['bar' => 'baz2']]], $request->validated());
-    }
-
-    /**
-     * @throws BindingResolutionException
-     * @throws AuthorizationException
-     * @throws ValidationException
-     */
-    public function testValidatedMethodNotValidateTwice(): void
-    {
-        $payload = ['name' => 'specified', 'with' => 'extras'];
-        $request = $this->createRequest($payload, FormRequestTwiceStub::class);
-        $request->validateResolved();
-        $request->validated();
-        $this->assertEquals(1, FormRequestTwiceStub::$count);
-    }
-
-    /**
-     * @throws AuthorizationException
-     * @throws BindingResolutionException
-     */
-    public function testValidateThrowsWhenValidationFails(): void
-    {
-        $this->expectException(ValidationException::class);
-        $request = $this->createRequest(['no' => 'name']);
-        $request->validateResolved();
-    }
-
-    public function testValidateMethodThrowsWhenAuthorizationFails(): void
-    {
-        $this->expectException(AuthorizationException::class);
-        $this->expectExceptionMessage('This action is unauthorized.');
-        $this->createRequest([], FormRequestForbiddenStub::class)->validateResolved();
-    }
-
-    /**
-     * @throws AuthorizationException
-     * @throws BindingResolutionException
-     * @throws ValidationException
-     */
-    public function test_after_validation_runs_after_validation(): void
-    {
-        $request = $this->createRequest([], FormRequestHooks::class);
-        $request->validateResolved();
-        $this->assertEquals(['name' => 'Adam'], $request->all());
-    }
-
-    /**
-     * Catch the given exception thrown from the executor, and return it.
-     *
-     * @param string $class
-     * @param Closure $executor
-     * @return Exception
-     *
-     * @throws Exception
-     */
-    protected function catchException(string $class, Closure $executor): Exception
-    {
-        try {
-            $executor();
-        } catch (Exception $e) {
-            if (is_a($e, $class)) {
-                return $e;
-            }
-            throw $e;
-        }
-        throw new Exception("No exception thrown. Expected exception {$class}.");
-    }
-
-    /**
-     * Create a new request of the given type.
-     *
-     * @param array $payload
-     * @param string $class
-     * @return FormRequest
-     */
-    protected function createRequest(array $payload = [], string $class = FormRequestStub::class): FormRequest
-    {
-        $container = tap(new Container(), function ($container) {
-            $container->instance(
-                ValidationFactoryContract::class,
-                $this->createValidationFactory($container)
-            );
-        });
-        /** @noinspection PhpUndefinedMethodInspection */
-        $request = $class::create('/', 'GET', $payload);
-        return $request->setContainer($container);
-    }
-
-    /**
-     * Create a new validation factory.
-     *
-     * @param Container $container
-     * @return ValidationFactory
-     */
-    protected function createValidationFactory(Container $container): ValidationFactory
-    {
-        $translator = m::mock(Translator::class)
-            ->shouldReceive('get')
-            ->zeroOrMoreTimes()
-            ->andReturn('error')
-            ->getMock();
-        /** @noinspection PhpParamsInspection */
-        return new ValidationFactory($translator, $container);
-    }
+    return $class::create('/', 'GET', $payload)
+        ->setContainer(
+            tap(new Container(), function ($container) {
+                return $container->instance(
+                    ValidationFactoryContract::class,
+                    new ValidationFactory(
+                        Mockery::mock(Translator::class)
+                            ->shouldReceive('get')
+                            ->zeroOrMoreTimes()
+                            ->andReturn('error')
+                            ->getMock(),
+                        $container
+                    )
+                );
+            })
+        );
 }
 
-class FormRequestStub extends FormRequest
-{
-    public function rules(): array
-    {
-        return ['name' => 'required'];
-    }
+afterEach(function () {
+    Mockery::close();
+});
 
-    public function authorize(): bool
-    {
-        return true;
-    }
-}
+it('returns the validated data', function () {
+    $form = makeRequest(['name' => 'specified', 'with' => 'extras']);
+    $form->validateResolved();
+    expect($form->validated())->toEqual(['name' => 'specified']);
+});
 
-class FormRequestNestedStub extends FormRequest
-{
-    public function rules(): array
-    {
-        return ['nested.foo' => 'required', 'array.*' => 'integer'];
-    }
+it('returns the validated data using nested rules', function () {
+    $form = makeRequest(
+        ['nested' => ['foo' => 'bar', 'baz' => ''], 'array' => [1, 2]],
+        FormRequestNestedStub::class
+    );
+    $form->validateResolved();
+    expect($form->validated())->toEqual(['nested' => ['foo' => 'bar'], 'array' => [1, 2]]);
+});
 
-    public function authorize(): bool
-    {
-        return true;
-    }
-}
+it('returns the validated data using nested child rules', function () {
+    $form = makeRequest(
+        ['nested' => ['foo' => 'bar', 'with' => 'extras']],
+        FormRequestNestedChildStub::class
+    );
+    $form->validateResolved();
+    expect($form->validated())->toEqual(['nested' => ['foo' => 'bar']]);
+});
 
-class FormRequestNestedChildStub extends FormRequest
-{
-    public function rules(): array
-    {
-        return ['nested.foo' => 'required'];
-    }
+it('returns the validated data using nested array rules', function () {
+    $form = makeRequest(
+        ['nested' => [['bar' => 'baz', 'with' => 'extras'], ['bar' => 'baz2', 'with' => 'extras']]],
+        FormRequestNestedArrayStub::class
+    );
+    $form->validateResolved();
+    expect($form->validated())->toEqual(['nested' => [['bar' => 'baz'], ['bar' => 'baz2']]]);
+});
 
-    public function authorize(): bool
-    {
-        return true;
-    }
-}
+it('not validate twice', function () {
+    $form = makeRequest(['name' => 'specified', 'with' => 'extras'], FormRequestTwiceStub::class);
+    $form->validateResolved();
+    $form->validated();
+    expect(FormRequestTwiceStub::$count)->toBeInt()->toEqual(1);
+});
 
-class FormRequestNestedArrayStub extends FormRequest
-{
-    public function rules(): array
-    {
-        return ['nested.*.bar' => 'required'];
-    }
+it('throws validation fails exception', function () {
+    $form = makeRequest(['no' => 'name']);
+    $form->validateResolved();
+})->throws(ValidationException::class);
 
-    public function authorize(): bool
-    {
-        return true;
-    }
-}
+it('throws authorization exception', function () {
+    $form = makeRequest([], FormRequestForbiddenStub::class);
+    $form->validateResolved();
+})->throws(AuthorizationException::class);
 
-class FormRequestTwiceStub extends FormRequest
-{
-    public static $count = 0;
-
-    public function rules(): array
-    {
-        return ['name' => 'required'];
-    }
-
-    public function withValidator(Validator $validator): void
-    {
-        $validator->after(function () {
-            self::$count++;
-        });
-    }
-
-    public function authorize(): bool
-    {
-        return true;
-    }
-}
-
-class FormRequestForbiddenStub extends FormRequest
-{
-    public function authorize(): bool
-    {
-        return false;
-    }
-}
-
-class FormRequestHooks extends FormRequest
-{
-    public function rules(): array
-    {
-        return ['name' => 'required'];
-    }
-
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    public function prepareForValidation(): void
-    {
-        $this->replace(['name' => 'Taylor']);
-    }
-
-    public function passedValidation(): void
-    {
-        $this->replace(['name' => 'Adam']);
-    }
-}
+it('runs after validation', function () {
+    $form = makeRequest([], FormRequestHooks::class);
+    $form->validateResolved();
+    expect($form->all())->toEqual(['name' => 'Adam']);
+});
