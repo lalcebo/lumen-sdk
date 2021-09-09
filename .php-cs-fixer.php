@@ -11,9 +11,8 @@ return (new PhpCsFixer\Config())
             'array_syntax' => ['syntax' => 'short'],
             'ordered_imports' => ['sort_algorithm' => 'alpha'],
             'no_unused_imports' => true,
-            'concat_space' => [
-                'spacing' => 'one'
-            ]
+            'concat_space' => ['spacing' => 'one'],
+            'class_definition' => ['space_before_parenthesis' => true]
         ]
     )
     ->setFinder(
