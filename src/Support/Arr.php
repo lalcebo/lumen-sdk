@@ -3,7 +3,7 @@
 /**
  * Created by Jorge P. Hernandez Lalcebo
  * Mail: lalcebo2003@gmail.com
- * Date: 7/26/21 1:23 PM
+ * Date: 7/26/21 1:23 PM.
  */
 
 declare(strict_types=1);
@@ -17,8 +17,9 @@ class Arr extends IlluminateArr
     /**
      * Convert single level array to multidimensional array.
      *
-     * @param array $array
+     * @param array  $array
      * @param string $delimiter
+     *
      * @return array
      *
      * @codeCoverageIgnore
@@ -33,7 +34,8 @@ class Arr extends IlluminateArr
      *
      * @param $array
      * @param callable $callback
-     * @param int $flag
+     * @param int      $flag
+     *
      * @return array
      *
      * @codeCoverageIgnore

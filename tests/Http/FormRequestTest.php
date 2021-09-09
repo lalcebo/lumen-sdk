@@ -3,7 +3,7 @@
 /**
  * Created by Jorge P. Hernandez Lalcebo
  * Mail: lalcebo2003@gmail.com
- * Date: 7/25/21 4:53 PM
+ * Date: 7/25/21 4:53 PM.
  */
 
 declare(strict_types=1);
@@ -129,11 +129,12 @@ class FormRequestTest extends TestCase
     /**
      * Catch the given exception thrown from the executor, and return it.
      *
-     * @param string $class
+     * @param string  $class
      * @param Closure $executor
-     * @return Exception
      *
      * @throws Exception
+     *
+     * @return Exception
      */
     protected function catchException(string $class, Closure $executor): Exception
     {
@@ -143,16 +144,19 @@ class FormRequestTest extends TestCase
             if (is_a($e, $class)) {
                 return $e;
             }
+
             throw $e;
         }
+
         throw new Exception("No exception thrown. Expected exception {$class}.");
     }
 
     /**
      * Create a new request of the given type.
      *
-     * @param array $payload
+     * @param array  $payload
      * @param string $class
+     *
      * @return FormRequest
      */
     protected function createRequest(array $payload = [], string $class = FormRequestStub::class): FormRequest
@@ -165,6 +169,7 @@ class FormRequestTest extends TestCase
         });
         /** @noinspection PhpUndefinedMethodInspection */
         $request = $class::create('/', 'GET', $payload);
+
         return $request->setContainer($container);
     }
 
@@ -172,6 +177,7 @@ class FormRequestTest extends TestCase
      * Create a new validation factory.
      *
      * @param Container $container
+     *
      * @return ValidationFactory
      */
     protected function createValidationFactory(Container $container): ValidationFactory
