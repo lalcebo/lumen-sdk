@@ -3,7 +3,7 @@
 /**
  * Created by Jorge P. Hernandez Lalcebo
  * Mail: lalcebo2003@gmail.com
- * Date: 7/25/21 4:56 PM
+ * Date: 7/25/21 4:56 PM.
  */
 
 declare(strict_types=1);
@@ -16,6 +16,7 @@ use Lalcebo\Lumen\Http\FormRequest;
 
 /**
  * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Foundation/Providers/FormRequestServiceProvider.php
+ *
  * @author https://github.com/laravel/framework/graphs/contributors
  */
 class FormRequestServiceProvider extends ServiceProvider

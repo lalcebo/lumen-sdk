@@ -3,7 +3,7 @@
 /**
  * Created by Jorge P. Hernandez Lalcebo
  * Mail: lalcebo2003@gmail.com
- * Date: 8/8/21 9:56 AM
+ * Date: 8/8/21 9:56 AM.
  */
 
 declare(strict_types=1);
@@ -27,6 +27,7 @@ trait Httpable
     {
         /**
          * @note It is confusing to return !app()->runningInConsole()
+         *
          * @see https://github.com/laravel/lumen-framework/blob/master/src/Exceptions/Handler.php#L47
          */
         return !app()->runningInConsole();

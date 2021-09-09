@@ -3,7 +3,7 @@
 /**
  * Created by Jorge P. Hernandez Lalcebo
  * Mail: lalcebo2003@gmail.com
- * Date: 9/2/21 1:22 PM
+ * Date: 9/2/21 1:22 PM.
  */
 
 declare(strict_types=1);
@@ -23,7 +23,8 @@ trait Filterable
      * Apply a filters to query.
      *
      * @param Builder $query
-     * @param array $filters
+     * @param array   $filters
+     *
      * @return Builder
      */
     public function scopeFilters(Builder $query, array $filters): Builder
@@ -37,10 +38,11 @@ trait Filterable
     /**
      * Apply filters to query if the given "condition" is truthy.
      *
-     * @param Builder $query
-     * @param bool $condition
-     * @param array $filters
+     * @param Builder    $query
+     * @param bool       $condition
+     * @param array      $filters
      * @param array|null $default
+     *
      * @return Builder
      */
     public function scopeFiltersWhen(Builder $query, bool $condition, array $filters, array $default = null): Builder

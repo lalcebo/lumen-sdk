@@ -3,7 +3,7 @@
 /**
  * Created by Jorge P. Hernandez Lalcebo
  * Mail: lalcebo2003@gmail.com
- * Date: 8/13/21 12:49 PM
+ * Date: 8/13/21 12:49 PM.
  */
 
 declare(strict_types=1);
@@ -44,12 +44,13 @@ abstract class AbstractS3StorageService extends AbstractStorageService
     /**
      * Set properties class from config keys values.
      *
-     * @return void
      * @throws Throwable
+     *
+     * @return void
      */
     protected function configurator(): void
     {
-        $configKey = 'filesystems.disks.' . $this->diskName;
+        $configKey = 'filesystems.disks.'.$this->diskName;
         if (config()->has($configKey)) {
             $reflection = new ReflectionObject($this);
             foreach (config($configKey) as $key => $val) {
