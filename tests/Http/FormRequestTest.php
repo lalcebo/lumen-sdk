@@ -2,6 +2,7 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 /** @noinspection StaticClosureCanBeUsedInspection */
+/** @noinspection PhpParamsInspection */
 
 /**
  * Created by Jorge P. Hernandez Lalcebo
@@ -33,7 +34,6 @@ use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestTwiceStub;
  * @param string $class
  *
  * @return FormRequest
- * @noinspection PhpParamsInspection
  * @noinspection PhpUndefinedMethodInspection
  */
 function makeRequest(array $payload = [], string $class = FormRequestStub::class): FormRequest
@@ -55,10 +55,6 @@ function makeRequest(array $payload = [], string $class = FormRequestStub::class
             })
         );
 }
-
-afterEach(function () {
-    Mockery::close();
-});
 
 it('returns the validated data', function () {
     $form = makeRequest(['name' => 'specified', 'with' => 'extras']);

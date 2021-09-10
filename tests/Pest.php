@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection StaticClosureCanBeUsedInspection */
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -41,9 +43,6 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-/*
-function something()
-{
-    // ..
-}
-*/
+afterEach(function () {
+    Mockery::close();
+});
