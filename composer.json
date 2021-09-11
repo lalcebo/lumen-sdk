@@ -27,7 +27,7 @@
     }
   ],
   "require": {
-    "php": "^7.3|^8.0",
+    "php": "^7.3 || ^8.0",
     "lalcebo/sdk-php-helpers": "^1.0",
     "laravel/lumen-framework": "^7.0|^8.0"
   },
