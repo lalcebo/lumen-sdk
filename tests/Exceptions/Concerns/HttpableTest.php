@@ -12,16 +12,24 @@ declare(strict_types=1);
 
 use Lalcebo\Lumen\Exceptions\Concerns\Httpable;
 
-function makeMockTrait(): object
+/**
+ * Create mockery object for Httpable trait.
+ *
+ * @return object
+ */
+function createMockForTrait(): object
 {
-    return Mockery::mock(Httpable::class)
-        ->makePartial();
+    return Mockery::mock(Httpable::class)->makePartial();
 }
 
-it('status code is numeric')
-    ->expect(makeMockTrait()->getStatusCode())
-    ->toBeInt();
+it('report is boolean', function () {
+    expect(createMockForTrait()->report())->toBeBool();
+});
 
-it('headers is array')
-    ->expect(makeMockTrait()->getHeaders())
-    ->toBeArray();
+it('status code is numeric', function () {
+    expect(createMockForTrait()->getStatusCode())->toBeInt();
+});
+
+it('headers is array', function () {
+    expect(createMockForTrait()->getHeaders())->toBeArray();
+});
