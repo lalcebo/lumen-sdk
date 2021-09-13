@@ -29,7 +29,7 @@
   "require": {
     "php": "^7.3 || ^8.0",
     "lalcebo/sdk-php-helpers": "^1.0",
-    "laravel/lumen-framework": "^7.0|^8.0"
+    "laravel/lumen-framework": "^7.0 || ^8.0"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.0",
@@ -40,7 +40,7 @@
     "php-parallel-lint/php-parallel-lint": "^1.3",
     "phpunit/phpunit": "^9.5.5",
     "roave/security-advisories": "dev-master",
-    "spatie/data-transfer-object": "^1.0|^2.0"
+    "spatie/data-transfer-object": "^1.0 || ^2.0"
   },
   "autoload": {
     "psr-4": {

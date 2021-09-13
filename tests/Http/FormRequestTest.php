@@ -26,6 +26,7 @@ use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestNestedChildStub;
 use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestNestedStub;
 use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestStub;
 use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestTwiceStub;
+use Lalcebo\Lumen\Tests\Mocks\Http\Requests\FormRequestValidatorStub;
 
 /**
  * Create a new request of the given type.
@@ -58,6 +59,12 @@ function makeRequest(array $payload = [], string $class = FormRequestStub::class
 
 it('returns the validated data', function () {
     $form = makeRequest(['name' => 'specified', 'with' => 'extras']);
+    $form->validateResolved();
+    expect($form->validated())->toEqual(['name' => 'specified']);
+});
+
+it('custom validator', function () {
+    $form = makeRequest(['name' => 'specified'], FormRequestValidatorStub::class);
     $form->validateResolved();
     expect($form->validated())->toEqual(['name' => 'specified']);
 });
