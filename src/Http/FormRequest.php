@@ -30,6 +30,8 @@ use Illuminate\Validation\Validator;
  *
  * @method bool authorize()
  * @method array rules()
+ * @method Validator validator(Factory $factory)
+ * @method void withValidator(Validator $validator)
  */
 class FormRequest extends Request implements ValidatesWhenResolved
 {
