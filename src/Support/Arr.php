@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Lalcebo\Lumen\Support;
 
 use Illuminate\Support\Arr as IlluminateArr;
+use Illuminate\Support\Collection;
 
 class Arr extends IlluminateArr
 {
@@ -41,5 +42,23 @@ class Arr extends IlluminateArr
     public static function whereRecursive($array, callable $callback, int $flag = 0): array
     {
         return \Lalcebo\Helpers\Arr::filterRecursive($array, $callback, $flag);
+    }
+
+    /**
+     * Convert a single or multidimensional array to collection.
+     *
+     * @param array $array
+     * @return Collection
+     */
+    public static function toCollection(array $array): Collection
+    {
+        return new Collection(
+            array_map(
+                static function ($item) {
+                    return is_array($item) || is_object($item) ? new Collection($item) : $item;
+                },
+                $array
+            )
+        );
     }
 }
