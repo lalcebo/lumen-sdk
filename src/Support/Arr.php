@@ -32,14 +32,14 @@ class Arr extends IlluminateArr
     /**
      * Filters recursive elements of an array using the given callback.
      *
-     * @param $array
+     * @param array $array
      * @param callable $callback
      * @param int $flag
      * @return array
      *
      * @codeCoverageIgnore
      */
-    public static function whereRecursive($array, callable $callback, int $flag = 0): array
+    public static function whereRecursive(array $array, callable $callback, int $flag = 0): array
     {
         return \Lalcebo\Helpers\Arr::filterRecursive($array, $callback, $flag);
     }
